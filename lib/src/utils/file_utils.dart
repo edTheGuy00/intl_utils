@@ -82,12 +82,12 @@ Future<void> updateArbFile(String fileName, Uint8List bytes) async {
 }
 
 /// Gets l10n Dart file path.
-String getL10nDartFilePath() =>
-    path.join(getRootDirectoryPath(), 'lib', 'generated', 'l10n.dart');
+String getL10nDartFilePath(String dirPath) =>
+    path.join(getRootDirectoryPath(), 'lib', dirPath, 'l10n.dart');
 
 /// Updates l10n Dart file.
-Future<void> updateL10nDartFile(String content) async {
-  var l10nDartFilePath = getL10nDartFilePath();
+Future<void> updateL10nDartFile(String content, String dirPath) async {
+  var l10nDartFilePath = getL10nDartFilePath(dirPath);
   var l10nDartFile = File(l10nDartFilePath);
 
   if (!l10nDartFile.existsSync()) {
@@ -98,20 +98,20 @@ Future<void> updateL10nDartFile(String content) async {
 }
 
 /// Gets intl directory path.
-String getIntlDirectoryPath() =>
-    path.join(getRootDirectoryPath(), 'lib', 'generated', 'intl');
+String getIntlDirectoryPath(String dirPath) =>
+    path.join(getRootDirectoryPath(), 'lib', dirPath, 'intl');
 
 /// Gets intl directory.
-Directory getIntlDirectory() {
-  var intlDirPath = getIntlDirectoryPath();
+Directory getIntlDirectory(String dirPath) {
+  var intlDirPath = getIntlDirectoryPath(dirPath);
   var intlDir = Directory(intlDirPath);
 
   return intlDir.existsSync() ? intlDir : null;
 }
 
 /// Creates intl directory.
-Future<Directory> createIntlDirectory() async {
-  var intlDirPath = getIntlDirectoryPath();
+Future<Directory> createIntlDirectory(String dirPath) async {
+  var intlDirPath = getIntlDirectoryPath(dirPath);
   var intlDir = Directory(intlDirPath);
 
   if (!intlDir.existsSync()) {
@@ -122,8 +122,9 @@ Future<Directory> createIntlDirectory() async {
 }
 
 /// Removes unused generated Dart files.
-Future<void> removeUnusedGeneratedDartFiles(List<String> locales) async {
-  var intlDir = getIntlDirectory();
+Future<void> removeUnusedGeneratedDartFiles(
+    List<String> locales, String dirPath) async {
+  var intlDir = getIntlDirectory(dirPath);
   if (intlDir == null) {
     return;
   }

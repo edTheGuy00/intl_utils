@@ -7,6 +7,7 @@ class PubspecConfig {
   bool _enabled;
   String _className;
   String _mainLocale;
+  String _customDirPath;
   LocalizelyConfig _localizelyConfig;
 
   PubspecConfig() {
@@ -32,6 +33,9 @@ class PubspecConfig {
     _mainLocale = flutterIntlConfig['main_locale'] is String
         ? flutterIntlConfig['main_locale']
         : null;
+    _customDirPath = flutterIntlConfig['custom_path'] is String
+        ? flutterIntlConfig['custom_path']
+        : null;
     _localizelyConfig =
         LocalizelyConfig.fromConfig(flutterIntlConfig['localizely']);
   }
@@ -41,6 +45,8 @@ class PubspecConfig {
   String get className => _className;
 
   String get mainLocale => _mainLocale;
+
+  String get path => _customDirPath;
 
   LocalizelyConfig get localizelyConfig => _localizelyConfig;
 }

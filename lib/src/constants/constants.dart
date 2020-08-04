@@ -3,3 +3,4 @@ const defaultMainLocale = 'en';
 const defaultUploadOverwrite = false;
 const defaultUploadAsReviewed = false;
 const defaultOtaEnabled = false;
+const deafultGeneratedDirPath = 'generated';

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import '../constants/constants.dart';
 import 'label.dart';
 import 'templates.dart';
 import 'intl_translation_helper.dart';
@@ -7,17 +8,18 @@ import 'generator_exception.dart';
 import '../config/pubspec_config.dart';
 import '../utils/utils.dart';
 import '../utils/file_utils.dart';
-import '../constants/constants.dart';
 
 class Generator {
   String _className;
   String _mainLocale;
   bool _otaEnabled;
+  String _dirPath;
 
   Generator() {
     var pubspecConfig = PubspecConfig();
 
     _className = defaultClassName;
+    _dirPath = deafultGeneratedDirPath;
     if (pubspecConfig.className != null) {
       if (isValidClassName(pubspecConfig.className)) {
         _className = pubspecConfig.className;
@@ -25,6 +27,10 @@ class Generator {
         warning(
             "Config parameter 'class_name' requires valid 'UpperCamelCase' value.");
       }
+    }
+
+    if (pubspecConfig.path != null) {
+      _dirPath = pubspecConfig.path;
     }
 
     _mainLocale = defaultMainLocale;
@@ -59,14 +65,14 @@ class Generator {
     var locales = _orderLocales(getLocales());
     var content =
         generateL10nDartFileContent(_className, labels, locales, _otaEnabled);
-    await updateL10nDartFile(content);
+    await updateL10nDartFile(content, _dirPath);
 
-    var intlDir = getIntlDirectory();
+    var intlDir = getIntlDirectory(_dirPath);
     if (intlDir == null) {
-      await createIntlDirectory();
+      await createIntlDirectory(_dirPath);
     }
 
-    await removeUnusedGeneratedDartFiles(locales);
+    await removeUnusedGeneratedDartFiles(locales, _dirPath);
   }
 
   List<Label> _getLabelsFromMainArbFile() {
@@ -110,8 +116,8 @@ class Generator {
   }
 
   Future<void> _generateDartFiles() async {
-    var outputDir = getIntlDirectoryPath();
-    var dartFiles = [getL10nDartFilePath()];
+    var outputDir = getIntlDirectoryPath(_dirPath);
+    var dartFiles = [getL10nDartFilePath(_dirPath)];
     var arbFiles = getArbFiles().map((file) => file.path).toList();
 
     var helper = IntlTranslationHelper();
